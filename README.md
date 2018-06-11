@@ -5,7 +5,7 @@
 文件索引如下：　　
 - msg  *//声明消息格式*　　　
 - scripts *//主要代码开发区　,也就是flask框架改编的地方*　　  
-  - /_/_pycache/_/_ 
+  - \_\_pycache\_\_ 
   - static  
   - templates
   - other files, such as defining ROS nodes
