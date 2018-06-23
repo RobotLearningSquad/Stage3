@@ -9,7 +9,7 @@ import base64
 
 
 def main():
-    f = open("audio/hts0000f2e1@ch09280e6320d4477500.wav", 'rb')
+    f = open("./static/audio/hts0000f2e1@ch09280e6320d4477500.wav", 'rb')
     file_content = f.read()
     print len(file_content)
     base64_audio = base64.b64encode(file_content)
