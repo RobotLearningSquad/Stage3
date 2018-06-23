@@ -6,16 +6,18 @@ import urllib
 import json
 import hashlib
 import base64
+import os
 
-
-def main():
-    f = open("./static/audio/hts0000f2e1@ch09280e6320d4477500.wav", 'rb')
+def recog(audio_path):
+    basepath = os.path.abspath("./src/stage3/scripts")
+    f = open(basepath+audio_path, 'rb')
+    print (basepath+audio_path)
     file_content = f.read()
     print len(file_content)
     base64_audio = base64.b64encode(file_content)
     print len(base64_audio)
     body = urllib.urlencode({'audio': base64_audio})
-    print len(body);
+    print len(body)
 
     url = 'http://api.xfyun.cn/v1/service/v1/iat'
     api_key = 'f9f0ad524f7d44cee5ab04546c7894b1'
@@ -33,7 +35,7 @@ def main():
     result = urllib2.urlopen(req)
     result = result.read()
     print result
-    return
+    return result
 
 if __name__ == '__main__':
-    main() 
+    recog("static/audio/hts0000f2e1@ch09280e6320d4477500.wav")
