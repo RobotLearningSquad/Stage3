@@ -40,22 +40,61 @@ app.config.update(
 )
 mongo = PyMongo(app)
 
-
-#def addDB(userid, food, num, unit, date, dateLeft):
-    #with app.app_context():
-        
-
-def quertDB(userid, item):
+class  Fridge(object):
+    def __init__(self, food, num, unit,date, leftHour):
+        self.food = food
+        self.num = num
+        self.unit = unit
+        self.date = date
+        self.leftHour = leftHour
+    
+# item can be None
+# return food List        
+def queryDB(userid, item):
+    foodlist = []
     if userid is not None:
         if item is not None:
-            frage = mongo.db.frages.find_raw_batches({'userid':userid}, {'food':item})
+            frage = mongo.db.frages.find({'userid':userid, 'food':item})
         else:
-            frage = mongo.db.frages.find_raw_batches({'userid':userid})
+            frage = mongo.db.frages.find({'userid':userid})
         for food in frage:
-            foo = bson.decode_all(food)
-            print foo
+            food.pop('_id')
+            foodlist.append(food)
+    return foodlist
 
+# item can be None
+# return delete item count
+def deleteDB(userid, item):
+    if userid is not None:
+        if item is not None:
+            res = mongo.db.frages.delete_one({'userid': userid, 'food':item})
+            return res.deleted_count
+        else:
+            res = mongo.db.frages.delete_many({'userid':userid})
+            return res.deleted_count
 
+# if already have same (userid, food) do changeDB
+# do not return 
+def addDB(userid, food, num, unit, date, dateLeft):
+    frage = {'userid':userid, 'food':food, 'num':int(num), 'unit':unit, 'date':date, 'dateLeft':int(dateLeft)}
+    res = queryDB(userid, food)
+    if res is not None:
+        changeDB(userid, food, num, True)
+    else:
+        mongo.db.frages.insert_one(frage)
+
+# flag = true add, flag = false minus
+# if find and change return true else return false
+def changeDB(userid, item, num, flag):
+    if flag is True:
+        res = mongo.db.frages.update_one({'userid': userid}, {'$inc': {'num': num}})
+    else:
+        num = 0 - num
+        res = mongo.db.frages.update_one({'userid': userid}, {'$inc': {'num': num}})
+    if res.matched_count is 0:
+        return False
+    else:
+        return True
 
 class InvalidUsage(Exception):
     status_code = 400
@@ -75,17 +114,35 @@ def invalid_usage(error):
 @app.route('/index', methods=['[post', 'get'])
 def index():
     #debug
-    ticks = time.time()
-    localtime = time.localtime(time.time())
-    userid='0.0.0.0'
-    food= 'apple'
-    num= 3
-    unit='one'
-    date=ticks
-    dateLeft= 10
-    frage = {'userid':userid, 'food':food, 'num':int(num), 'unit':unit, 'date':date, 'dateLeft':int(dateLeft)}
-    print frage
-    mongo.db.frages.insert_one(frage)
+    #ticks = time.time()
+    #localtime = time.localtime(time.time())
+    #userid='0.0.0.0'
+    #food= 'apple'
+    #num= 3
+    #unit='one'
+    #date=ticks
+    #dateLeft= 10
+    #frage1 = {'userid':userid, 'food':food, 'num':int(num), 'unit':unit, 'date':date, 'dateLeft':int(dateLeft)}
+    #frage2 = {'userid':'0.0.0.1', 'food':food, 'num':int(num), 'unit':unit, 'date':date, 'dateLeft':int(dateLeft)}
+    #frage3 = {'userid':userid, 'food':'toufu', 'num':int(num), 'unit':unit, 'date':date, 'dateLeft':int(dateLeft)}
+    #mongo.db.frages.insert_one(frage1)
+    #addDB(userid,food,num,unit,date,dateLeft)
+    #mongo.db.frages.insert_one(frage3)
+    #res = queryDB(userid, food)
+    #print res
+
+    #res = changeDB(userid, food, 5, True)
+    #print res
+
+    #res = queryDB(userid, food)
+    #print res
+
+    #res = deleteDB(userid, food)
+    #print res
+
+    #res = queryDB(userid, None)
+    #print res
+    
     
     # set user cookies
     userid = request.cookies.get('userid')
