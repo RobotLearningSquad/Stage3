@@ -37,12 +37,12 @@ def writeFile(file, content):
         f.write(content)
     f.close()
 
-r = requests.post(URL,headers=getHeader(),data=getBody("存入苹果4个，4天后过期"))
+r = requests.post(URL,headers=getHeader(),data=getBody("存入苹果14个，122天后过期"))
 contentType = r.headers['Content-Type']
 if contentType == "audio/mpeg":
     sid = r.headers['sid']
     if AUE == "raw":
-        writeFile("./static/audio/"+sid+".wav", r.content)
+        writeFile("./static/audio/"+"apple4"+".wav", r.content)
     else :
         writeFile("./static/audio/"+sid+".mp3", r.content)
     print "success, sid = " + sid
