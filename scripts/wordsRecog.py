@@ -37,5 +37,6 @@ def recog(audio_path):
     print result
     return result.decode('utf-8')
 
+
 if __name__ == '__main__':
     recog("static/audio/hts0000f2e1@ch09280e6320d4477500.wav")
