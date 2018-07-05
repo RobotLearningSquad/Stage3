@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">  
+	<title>ROBO取出食物</title>
+	<link rel="stylesheet" href="ROBO-5.css">
+	<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+	<script type="text/javascript">
+		//修改为每隔多少时间调用语音接口
+		function displayTime(){
+			//1.获取div元素
+			var timeDiv=document.getElementById("timeDiv");
+			//2.获取系统当前时间
+			var nowTime=new Date();
+			var strNowTime=nowTime.toLocaleString();
+			//3.将系统时间设置到div元素中
+			//timeDiv.innerHTML=strNowTime;
+      //console.log(strNowTime);
+		}
+		//每隔1秒调用一次displayTime函数
+		function start(){
+			window.setInterval("displayTime()",1000)//单位是毫秒
+		}
+  </script>	
+
+</head>
+<body onload="start();" style="background-color:white; min-width: 840px;min-height: 600px;margin: 0 auto;border: 1px solid white">
+	<div style="background-color: black;height: 550px;width: 300px;margin-left: 35%;margin-top: 30px;border:1px solid black;">
+		<div style="height: 490px;line-height: 49px;width: 240px;top: 30px;left: 30px;position: relative;background-color:blue;border:1px solid green;">
+			<img src="https://wx3.sinaimg.cn/mw690/006p1aI3ly1fsc2ogp1anj306u0dpdft.jpg">	
+			<span id="tips" style="color:black; position: absolute; top:0px; left:15px;">
+			<b>取出食物</b><br/>
+			如何使用语音操作：<br/>
+			<p>说出“水果”+“数量”</p>
+			</span>
+			<span id="res" style="color:black; position: absolute; top:0px; left:15px;">
+			</span>
+		</div>	
+	</div>
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$.ajax({
+				type:'GET',
+				url:"https://resource.haorenao.cn/teas2.json",
+				success: function(data) {
+					var teas = data;
+					console.log(teas);
+					var html = '<span><b>冰箱现存食物：</b><br/><marquee direction="up" behavior="scroll" scrolldelay="200">'
+					//scrolldelay="500"
+					$.each(teas,function(key, value) {
+						var title = value.title;
+						var image = value.image;
+						var price = value.price;
+						html = html + title + +':' + price + '<br/>';
+					});
+					html = html + '</span></marquee>'
+					//$('#fruits').append(html);
+					//
+					/*
+					//理论上，从数据库获取参数表示添加成功或者失败
+					switch(data.res) {
+						//success
+						case 1:
+							var show = '<span><b>取出成功！</b><br/>'+data.fruits+' '+data.num+'</span>';
+							$('#res').append(show);
+							break;
+						case 0:
+							var show = '<span><b>取出失败！</b></span>';
+							$('#res').append(show);
+							break;							
+					}
+					*/
+				}
+				//fail
+			});
+		});
+	</script>
+</body>
+</html>
