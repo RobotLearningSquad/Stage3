@@ -9,7 +9,7 @@ import time
 import bson
 import wordsRecog 
 import wave
-from robo_talker import talker 
+#from robo_talker import talker 
 # index/
 # command/        GET
   # put/          GET
