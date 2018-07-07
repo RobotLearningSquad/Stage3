@@ -67,6 +67,7 @@ app.config['FLASK_DEBUG'] = 1
 app.config.update(
     MONGO_HOST='localhost',
     MONGO_PORT = 27017,
+    MONGO_URI='mongodb://localhost:27017/flask',
     MONGO_USERNAME='tempo',
     MONGO_PASSWORD='11111111',
     MONGO_DBNAME='frage_DB'
