@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding=utf-8 -*-
 from werkzeug.utils import secure_filename
 from flask import *
 from flask_pymongo import PyMongo
@@ -7,6 +8,8 @@ import os
 import time
 import bson
 import wordsRecog 
+import wave
+from robo_talker import talker 
 # index/
 # command/        GET
   # put/          GET
@@ -69,6 +72,7 @@ app.config.update(
     MONGO_DBNAME='frage_DB'
 )
 mongo = PyMongo(app)
+PageCount = 0
 
 class  Fridge(object):
     def __init__(self, food, num, unit,date, leftHour):
@@ -144,20 +148,24 @@ def invalid_usage(error):
     return response
 
 @app.route('/', methods=['post', 'get'])
+@app.route('/U-ROBO-1.html', methods=['post','get'])
+@app.route('/command/command/command/U-ROBO-1.html', methods=['post','get'])
 def timePage():
     #debug
-    date = time.time()
-    localtime = time.localtime(time.time())
-    userid='127.0.0.1'
-    food= 'fuck'
-    num= 3
-    unit='one'
-    dateLeft= 10
-    frage1 = {'userid':userid, 'food':food, 'num':int(num), 'unit':unit, 'date':date, 'dateLeft':int(dateLeft)}
+    #date = time.time()
+    #localtime = time.localtime(time.time())
+    #userid='127.0.0.1'
+    #food= '五'.decode('utf-8')
+    #num= 3
+    #unit='one'
+    #dateLeft= 10
+    #frage1 = {'userid':userid, 'food':food, 'num':int(num), 'unit':unit, 'date':date, 'dateLeft':int(dateLeft)}
+    #frage1Print = json.dumps(frage1,encoding='UTF-8',ensure_ascii=False)
+    #print frage1Print
     #frage2 = {'userid':'0.0.0.1', 'food':food, 'num':int(num), 'unit':unit, 'date':date, 'dateLeft':int(dateLeft)}
     #frage3 = {'userid':userid, 'food':'toufu', 'num':int(num), 'unit':unit, 'date':date, 'dateLeft':int(dateLeft)}
-    res = addDB(userid,food,num,unit,date,dateLeft)
-    print res
+    #res = addDB(userid,food,num,unit,date,dateLeft)
+    #print res
     #mongo.db.frages.insert_one(frage3)
     #res = queryDB(userid, food)
     #print res
@@ -166,7 +174,12 @@ def timePage():
     #print res
     return render_template('U-ROBO-1.html')
 
+@app.route('/command', methods=['[post', 'get'])
 @app.route('/index', methods=['[post', 'get'])
+@app.route('/command/index', methods=['[post', 'get'])
+@app.route('/U-ROBO-2.html', methods=['post','get'])
+@app.route('/command/command/index', methods=['post', 'get'])
+@app.route('/command/command/command/index', methods=['post', 'get'])
 def index():
     # set user cookies
     userid = request.cookies.get('userid')
@@ -177,7 +190,7 @@ def index():
     resp.set_cookie('userid', userid)
     return resp
 
-@app.route('/index/request', methods=['get'])
+@app.route('/command/request', methods=['get'])
 def indexRequire():
     userid = request.cookies.get('userid')
     if userid is None :
@@ -188,18 +201,33 @@ def indexRequire():
         foodList = queryDB(userid, None)
         print foodList
     resp = make_response(jsonify(foodList))
-    test = jsonify(foodList)
     return resp
 
-@app.route('/command', methods=['post', 'get'])
+@app.route('/command/router', methods=['post', 'get'])
+@app.route('/command/command/router', methods=['post', 'get'])
+@app.route('/command/command/command/router', methods=['post', 'get'])
+@app.route('/command/command/command/command/router', methods=['post', 'get'])
 def commandJump(jump=0):
+    global PageCount
+    jump = PageCount
+    print jump
+    if(jump == 5) :
+        PageCount = 0
+    else :
+        PageCount+=1
     if jump is 0:
-        return render_template('U-ROBO-2.html')
+        return render_template('U-ROBO-3.html')
     if jump is 1:
-        return render_template('U-ROBO-4.html')
+        return render_template('U-ROBO-3.html')
     if jump is 2:
+        return render_template('U-ROBO-4.html')
+    if jump is 3:
+        return render_template('U-ROBO-4.html')
+    if jump is 4:
         return render_template('U-ROBO-5.html')
-    return render_template('U-ROBO-3.html')
+    if jump is 5:
+        return render_template('U-ROBO-5.html')
+    return render_template('U-ROBO-2.html')
 
 ALLOWED_EXTENSIONS = set(['wav'])
 UPLOAD_FOLDER = './static/audio'
@@ -210,38 +238,80 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
-@app.route('/command/put', methods=['post'])
+@app.route('/test', methods=['get'])
+def testPage():
+    return make_response(render_template('test.html'))
+
+@app.route('/command/router/put', methods=['POST'])
 def putIn():
     userid = request.cookies.get('userid')
     #wait to be replaced by ('/command/put.html') 
-    resp = make_response(render_template('U-ROBO-4.html'))
+    #resp = make_response(render_template('U-ROBO-4.html'))
+    resp = make_response("200")
     resp.status_code=200
+    testdata=request.form
+    #testdata.encode('utf-8')
+    print testdata
+    print testdata.len
     if userid is None:
         # no cookies Forbidden
-        return redirect(url_for('/'), 403)
+        return redirect(url_for('index'), 403)
+#debug
+    ticks = time.time()
+    food= 'apple'
+    num= 12
+    unit='one'
+    date=ticks
+    dateLeft= 4*24
+    addDB(userid,food,num,unit,date,dateLeft)
+    #if request.method == 'POST':
+        #test = request.get_data()["data"]
+        #print test
+        #with open('test.wav','wb') as f :
+            #f.write(testdata)
+            #f.close()
+        #with wave.open('test.wav', 'rb') as f:
 
-    if request.method == 'POST':
-        file = request.files['file']
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            basepath = os.path.abspath(UPLOAD_FOLDER)
-            print os.path.join(basepath, filename)
-            file.save(os.path.join(basepath, filename))
-            #result = recog(os.path.join(UPLOAD_FOLDER, filename))
-            result = {'userid':userid, 'food':'apple', 'num':int(5), 'unit':'', 'date':'', 'dateLeft':int(24)}
-            print result
-            # split into words
-
-            # save in DB
-            ticks = time.time()
-            addDB(userid,result['food'],result['num'],"",ticks,result['dateLeft'])
-            return resp
-        else:    
-            # illegal
-            raise InvalidUsage('illegal file input', 403)
-    else:
-        raise InvalidUsage('wrong instruction', 400)
+        #print file.len
+    #else:
+        #raise InvalidUsage('wrong instruction', 400)
     return resp
+
+@app.route('/command/router/get', methods=['POST'])
+def getOut():
+    userid = request.cookies.get('userid')
+    #wait to be replaced by ('/command/put.html') 
+    #resp = make_response(render_template('U-ROBO-4.html'))
+    resp = make_response("200")
+    resp.status_code=200
+    testdata=request.form
+    #testdata.encode('utf-8')
+    print testdata
+    print testdata.len
+    if userid is None:
+        # no cookies Forbidden
+        return redirect(url_for('index'), 403)
+#debug
+    ticks = time.time()
+    food= 'apple'
+    num= 4
+    unit='one'
+    date=ticks
+    dateLeft= 4*24
+    changeDB(userid, food,num,False)
+    #if request.method == 'POST':
+        #test = request.get_data()["data"]
+        #print test
+        #with open('test.wav','wb') as f :
+            #f.write(testdata)
+            #f.close()
+        #with wave.open('test.wav', 'rb') as f:
+
+        #print file.len
+    #else:
+        #raise InvalidUsage('wrong instruction', 400)
+    return resp
+
 
 @app.errorhandler(404)
 def page_not_found(error):
@@ -313,17 +383,18 @@ def getFood():
 
 
 @app.route('/command/show', methods=['get'])
+@app.route('/command/router/show', methods=['get'])
 def show():
     userid = request.cookies.get('userid')
-    #wait to be replaced by ('/command/show.html') 
-    resp = make_response(render_template('upload.html'))
-    resp.status_code = 200
-    if userid is None:
-        # no cookies Forbidden
-        return redirect(url_for('/'), 403)
-    
-    # set DB items into response
-    return render_template('U-ROBO-2.html')
+    if userid is None :
+        print 'no cookie'
+        raise InvalidUsage('user doesnt exit', 403)
+    else:
+        # Query and find items and show
+        foodList = queryDB(userid, None)
+        print foodList
+    resp = make_response(jsonify(foodList))
+    return resp
 
 
 
