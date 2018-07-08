@@ -25,11 +25,11 @@
 			window.setInterval("setTime()",1000)//单位是毫秒
       setInterval("redirect()", 1000); 
       //录音15秒就停止录音，并且提交
-      setInterval("check()", 10000); 
+      setInterval("check()", 5000); 
 		}
     function redirect(){ 
       second--;
-      if(second<0) location.href='index'; 
+      if(second<0) window.history.back(-1);
     }    
     function check() {
         //alert("?");
@@ -104,7 +104,15 @@
 		});
 		window.addEventListener("DOMContentLoaded", function () {
                 $('#uploadAudio').on('click', function () {
-                    window.location.href="index";
+                    var fd = new FormData();
+fd.append('testData', 'test');
+
+var xhr = new XMLHttpRequest();
+
+xhr.open('POST', 'http://localhost:5000/command/router/get');
+
+xhr.send(fd);
+
                 });
             }, false);
 	</script>

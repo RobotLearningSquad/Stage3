@@ -67,7 +67,7 @@ app.config['FLASK_DEBUG'] = 1
 app.config.update(
     MONGO_HOST='localhost',
     MONGO_PORT = 27017,
-    MONGO_URI='mongodb://localhost:27017/flask',
+    MONGO_URI='mongodb://localhost:27017/frage_DB',
     MONGO_USERNAME='tempo',
     MONGO_PASSWORD='11111111',
     MONGO_DBNAME='frage_DB'
@@ -180,7 +180,6 @@ def timePage():
 @app.route('/command/index', methods=['[post', 'get'])
 @app.route('/U-ROBO-2.html', methods=['post','get'])
 @app.route('/command/command/index', methods=['post', 'get'])
-@app.route('/command/command/command/index', methods=['post', 'get'])
 def index():
     # set user cookies
     userid = request.cookies.get('userid')
@@ -194,6 +193,7 @@ def index():
 @app.route('/command/request', methods=['get'])
 def indexRequire():
     userid = request.cookies.get('userid')
+    print userid
     if userid is None :
         print 'no cookie'
         raise InvalidUsage('user doesnt exit', 403)
@@ -206,13 +206,11 @@ def indexRequire():
 
 @app.route('/command/router', methods=['post', 'get'])
 @app.route('/command/command/router', methods=['post', 'get'])
-@app.route('/command/command/command/router', methods=['post', 'get'])
-@app.route('/command/command/command/command/router', methods=['post', 'get'])
 def commandJump(jump=0):
     global PageCount
     jump = PageCount
     print jump
-    if(jump == 5) :
+    if(jump == 7) :
         PageCount = 0
     else :
         PageCount+=1
@@ -227,7 +225,11 @@ def commandJump(jump=0):
     if jump is 4:
         return render_template('U-ROBO-5.html')
     if jump is 5:
-        return render_template('U-ROBO-5.html')
+        return render_template('U-ROBO-3.html')
+    if jump is 6:
+        return render_template('U-ROBO-3.html')
+    if jump is 7:
+        return render_template('U-ROBO-3.html')
     return render_template('U-ROBO-2.html')
 
 ALLOWED_EXTENSIONS = set(['wav'])
@@ -250,10 +252,10 @@ def putIn():
     #resp = make_response(render_template('U-ROBO-4.html'))
     resp = make_response("200")
     resp.status_code=200
-    testdata=request.form
+    #testdata=request.form
     #testdata.encode('utf-8')
-    print testdata
-    print testdata.len
+    #print testdata
+    #print testdata.len
     if userid is None:
         # no cookies Forbidden
         return redirect(url_for('index'), 403)
@@ -264,7 +266,8 @@ def putIn():
     unit='one'
     date=ticks
     dateLeft= 4*24
-    addDB(userid,food,num,unit,date,dateLeft)
+    res = addDB(userid,food,num,unit,date,dateLeft)
+    print res
     #if request.method == 'POST':
         #test = request.get_data()["data"]
         #print test
@@ -285,10 +288,10 @@ def getOut():
     #resp = make_response(render_template('U-ROBO-4.html'))
     resp = make_response("200")
     resp.status_code=200
-    testdata=request.form
+    #testdata=request.form
     #testdata.encode('utf-8')
-    print testdata
-    print testdata.len
+    #print testdata
+    #print testdata.len
     if userid is None:
         # no cookies Forbidden
         return redirect(url_for('index'), 403)
@@ -299,7 +302,8 @@ def getOut():
     unit='one'
     date=ticks
     dateLeft= 4*24
-    changeDB(userid, food,num,False)
+    res = changeDB(userid, food,num,False)
+    print res
     #if request.method == 'POST':
         #test = request.get_data()["data"]
         #print test

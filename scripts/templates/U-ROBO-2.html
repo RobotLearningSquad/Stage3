@@ -25,11 +25,11 @@
 			window.setInterval("setTime()",1000)//单位是毫秒
       setInterval("redirect()", 1000); 
       //录音15秒就停止录音，并且提交
-      setInterval("check()", 15000); 
+      setInterval("check()", 5000); 
 		}
     function redirect(){ 
       second--;
-      if(second<0) location.href='U-ROBO-1.html'; 
+      if(second<0) window.history.back(-1);
     }    
     function check() {
         //alert("?");
