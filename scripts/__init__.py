@@ -263,7 +263,7 @@ def putIn():
         return redirect(url_for('index'), 403)
 #debug
     ticks = time.time()
-    food= 'apple'
+    food= '苹果'
     num= 12
     unit='one'
     date=ticks
@@ -299,7 +299,7 @@ def getOut():
         return redirect(url_for('index'), 403)
 #debug
     ticks = time.time()
-    food= 'apple'
+    food= '苹果'
     num= 4
     unit='one'
     date=ticks
