@@ -112,10 +112,12 @@ def deleteDB(userid, item):
 # return type of "change" or "add"
 def addDB(userid, food, num, unit, date, dateLeft):
     frage = {'userid':userid, 'food':food, 'num':int(num), 'unit':unit, 'date':date, 'dateLeft':int(dateLeft)}
-    res = queryDB(userid, food)
+    #json.dumps(food,encoding='UTF-8',ensure_ascii=False)
+    #res = queryDB(userid, food)
+    res = queryDB(userid, json.dumps(food,encoding='UTF-8',ensure_ascii=False))
     print len(res)
     if len(res) > 0:
-        changeDB(userid, food, num, True)
+        changeDB(userid, json.dumps(food,encoding='UTF-8',ensure_ascii=False), num, True)
         return "change"
     else:
         mongo.db.frages.insert_one(frage)
