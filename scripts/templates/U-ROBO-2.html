@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>ROBO操作提示</title>
+	<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+
+	<script type="text/javascript">
+    var on = true;
+    //等待25秒后，如果没有其他操作跳回默认页面
+    var totalSecond = 25;
+    var second = 25;
+    var time = 0;
+    //var order = false;
+
+		function setTime(){
+      time++;  
+      //console.log(time);
+      if(time > 15) {
+        //getMessage();
+      }
+		}
+		//每隔1秒调用一次displayTime函数
+		function start(){
+			window.setInterval("setTime()",1000)//单位是毫秒
+      setInterval("redirect()", 1000); 
+      //录音15秒就停止录音，并且提交
+      setInterval("check()", 5000); 
+		}
+    function redirect(){ 
+      second--;
+      if(second<0) window.history.back(-1);
+    }    
+    function check() {
+        //alert("?");
+        if(on == true) {
+          //alert("t-f");
+          on = false;
+        }
+        else {
+          //alert("f-t");
+         //on = true;
+        }
+    }
+
+  </script>	
+</head>
+<body onload="start();" style="background-color:white; min-width: 840px;min-height: 600px;margin: 0 auto;border: 1px solid white">
+	<div style="background-color: black;height: 550px;width: 300px;margin-left: 35%;margin-top: 30px;border:1px solid black;">
+		<div style="height: 490px;line-height: 49px;width: 240px;top: 30px;left: 30px;position: relative;background-color:blue;border:1px solid green;">
+			<img src="https://wx3.sinaimg.cn/mw690/006p1aI3ly1fsc2ogp1anj306u0dpdft.jpg">	
+			<span id="tips" style="color:black; position: absolute; top:0px; left:15px;">
+			<b>操作：</b><br/>
+			<p>1、查看库存<br/>
+			2、添加食物<br/>
+			3、取出食物</p><br/>
+      <input type="button" value="开始录音" onclick="startRecording()"/>
+
+    <input type="button" value="停止录音" onclick="obtainRecord()"/>
+
+    <button id="uploadAudio" >提交</button>
+			</span>
+		</div>	
+
+	</div>
+	<div id="timeDiv" style="color:black; margin-left: 30px;"></div>
+
+
+
+<script>
+
+/* 音频 */
+      var recorder;
+      var audio = document.querySelector('audio');
+
+      function startRecording() {
+        HZRecorder.get(function (rec) {
+          recorder = rec;
+          recorder.start();
+        });
+      }
+
+      function obtainRecord(){
+        var record = recorder.getBlob();
+        
+      };
+
+      function stopRecord(){
+        recorder.stop();
+      };
+
+    
+      function playRecord(){
+        recorder.play(audio);
+      };
+
+
+      window.addEventListener("DOMContentLoaded", function () {
+                $('#uploadAudio').on('click', function () {
+                    window.location.href="command/router";
+                });
+            }, false);
+</script>
+<script src="{{url_for('static',filename='r1.js')}}"></script>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+/*$.ajax({
+  type:'GET',
+  url:"http://localhost:5000/index/request",
+  success: function(data) {
+    var teas = data;
+    console.log(data);
+    var html = '<span><b>冰箱现存食物：</b><br/><marquee direction="up" behavior="scroll" scrolldelay="200">'
+    //scrolldelay="500"
+    $.each(teas,function(key, value) {
+      console.log(value);
+      var food = value.food;
+      var num = value.num;
+      var leftHour = value.dateLeft;
+      //var html = '<div style="whidth:333px;height:300px;float:left; text-algn:center;margin:10px 0;">'
+      //	+ '<h1 style="margin:0">' + title + '</h1>'
+      //	+'<img whidth="200" height="200" src="' + image + '">'
+      //	+ '<p>价格:' + price +'</p>'
+      //	+ '</div>';
+      html = html + food +': ' + num +' leftTime: ' + leftHour + ' hour'+'<br/>';
+    });
+    html = html + '</span></marquee>'
+    $('#fruits').append(html);
+  }
+});*/
+window.addEventListener("DOMContentLoaded", function () {
+                $('#uploadAudio').on('click', function () {
+                    window.location.href="command/router";
+                });
+            }, false);
+});
+
+ function uploadAudio() {
+  
+            recorder.upload("Handler1.ashx", function (state, e) {
+                switch (state) {
+                    case 'uploading':
+                        //var percentComplete = Math.round(e.loaded * 100 / e.total) + '%';
+                        break;
+                    case 'ok':
+                        //alert(e.target.responseText);
+                        alert("上传成功");
+                        break;
+                    case 'error':
+                        alert("上传失败");
+                        break;
+                    case 'cancel':
+                        alert("上传被取消");
+                        break;
+                }
+            });
+        }
+
+</script>
+
+</body>
+</html>

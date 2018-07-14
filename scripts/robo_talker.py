@@ -62,7 +62,8 @@ def talker(message,path):
     if message == 2:
         talker_db(path)
     if message == 3:
-        talker_wr(path)
+        talker_wc(path)
+    return MSG
 
 if __name__ == '__main__':
     try:

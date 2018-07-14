@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ROBO查看库存</title>
+	<link rel="stylesheet" href="ROBO-2.css">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">  
+	<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>	
+	<script type="text/javascript">
+		var totalSecond = 10;
+		var second = 10;
+
+		//每隔1秒调用一次
+		function start(){
+			window.setInterval("check()",1000)//单位是毫秒
+			setInterval("redirect()", 1000); 
+		}
+		function redirect(){ 
+			second--;
+			if(second<0) window.history.back(-1);
+		}  
+
+    </script>	
+
+</head>
+<body onload="start();" style="background-color:white; min-width: 840px;min-height: 600px;margin: 0 auto;border: 1px solid white">
+	<div style="background-color: black;height: 550px;width: 300px;margin-left: 35%;margin-top: 30px;border:1px solid black;">
+		<div style="height: 490px;line-height: 49px;width: 240px;top: 30px;left: 30px;position: relative;background-color:blue;border:1px solid green;">
+			<!--<div id="timeDiv" style="color:orange; margin-left: 30px;margin-top:20px"></div>-->
+			<!--<img src = "https://wx1.sinaimg.cn/mw690/006p1aI3ly1fsc2gcox3kj306u0dp0z8.jpg">-->
+			<img src="https://wx3.sinaimg.cn/mw690/006p1aI3ly1fsc2ogp1anj306u0dpdft.jpg">	
+			<span id="fruits" style="color:black; position: absolute; top:0px; left:15px;">
+			</span>
+		</div>	
+	</div>
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			var arr=[{"name":"caocao", "sex": "man"}];
+			//var json = {"name":"caocao", "sex": "man"};
+			//arr.push(json);
+			console.log(arr);
+		
+			$.ajax({
+				//type:'POST',
+				//url:"https://resource.haorenao.cn/teas2.json",
+				//dataType: "json",  
+				//data: 
+				//success: function(data) {
+					//var teas1 = data;
+					//console.log(teas1);
+				//}
+			});
+
+			$.ajax({
+				type:'GET',
+				url:"http://203.195.164.196:5000/command/request",
+				success: function(data) {
+					var teas = data;
+					console.log(teas);
+					var html = '<span><b>冰箱现存食物：</b><br/><marquee direction="up" behavior="scroll" scrolldelay="200">'
+					//scrolldelay="500"
+					$.each(teas,function(key, value) {
+						console.log(value);
+						var food = value.food;
+						var num = value.num;
+						var leftHour = value.dateLeft;
+						//var html = '<div style="whidth:333px;height:300px;float:left; text-algn:center;margin:10px 0;">'
+						//	+ '<h1 style="margin:0">' + title + '</h1>'
+						//	+'<img whidth="200" height="200" src="' + image + '">'
+						//	+ '<p>价格:' + price +'</p>'
+						//	+ '</div>';
+						html = html + food +': ' + num +' leftTime: ' + leftHour + ' hour'+'<br/>';
+					});
+					totalSecond += teas.length;
+					second = totalSecond;
+					html = html + '</span></marquee>'
+					$('#fruits').append(html);
+				}
+			});
+		});	
+		function check() {
+			//console.log(1);
+			
+		}
+
+
+	</script>
+
+</body>
+</html>
